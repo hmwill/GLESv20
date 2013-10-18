@@ -1,0 +1,46 @@
+TODO
+----
+
+- ExpressionComponent and ExpressionIndex: Handle multiplication/scaling of index correctly:
+	If the types resolves into a primitive type, scale by element size. Actually, this is only
+	necessary if the element type size is not 1.
+
+
+-------------------------------------------------------------------
+
+- Pre-processor execution
+
+- Predefined functions; determine how to implement them (inline assembly?) and how to
+	execute them at compile time on constant expressions (special symbol table?).
+
+- Linker design: 
+	- Determine set of varyings for the combined program
+	- Determine overall set of uniforms
+	- Linkage to pre-defined parameters, input and output
+	- Allocate varyings (incl. fusion of variables into single words)
+	- Allocate uniforms
+	- Optimize and link shader program
+	
+- Backend design:
+	- High-level design (sequence of operations)
+	- Def/Use analysis
+	- Control flow analysis
+	- SSA transformation
+	- Pluggable optimization steps:
+		- Dead code elimination; particularly unreachable blocks
+		- Strength reduction
+		- Constant propagation
+		- Swizzle reduction
+		- Loop unrolling(?)
+	- Re-allocation of variables within words
+	- Global memory allocation 
+		
+- Execution engine:
+	- Design interpreter for IL 
+	
+- Debugging support:
+	- Debug dumps of token streams
+	- Debug dumps of symbol table during compile
+	- Debug dumps of generated IL code
+	- Debug dumps of compiled shader
+	

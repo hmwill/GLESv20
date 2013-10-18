@@ -1,0 +1,50 @@
+To Do Items
+===========
+
+------------------------------------------------------------------------------
+
+1. Algorithm for rewriting program after varyings have been packed
+
+Input:
+	IL program
+	Mapping of variables to base + offset and shift
+	
+Output:
+	Modified IL program
+	
+Algorithm:
+	2 phases: First fix all read accesses, then fix all write accesses:
+	
+	Read access:
+		Iterate over all instructions:
+			If instruction references a variable to be remapped as source operand:
+				Apply inverse mapping to source operand
+				
+	Write access:
+		Iterate over all variables v in mapping:
+			For all instructions that use v as destination:
+				apply mapping to both source operands, modify write mask for destination
+				
+		Determine all instructions that use v as source operand:
+			apply inverse mapping to source operand
+				
+------------------------------------------------------------------------------
+								
+2. Uniform variable access
+
+Issue:
+	GL core converts any higher dimensional array to 1-dimensional array
+	However, this is not how the array should be exposed through API
+	
+	Alternatives:
+		At the API level, we have pseudovariables defined corresponding to each
+		of the 1-dimensional slices of a multi-dimensional array
+		At the API level, we actually use a symbol table data structure to parse
+		uniform names down to references to at most 1-dimensional arrays
+		
+	Question:
+		How to feed information about multi-dimensionality down the path?
+		Maybe "annotations" to actual shader program that define variables?
+		Or: Individual variables carry an "annotation" tht maps them back to the GLSL level?
+		
+	

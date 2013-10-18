@@ -1,0 +1,25 @@
+#---------------------------------------------------------------------
+# Project configuration.
+#---------------------------------------------------------------------
+
+# Name of build target.
+TARGET := foobar
+
+# Source directories (delimited with spaces).
+BUILD_VPATH := .
+
+# Source files to build target from.
+BUILD_FILES := 
+
+# Build configuration [release] or [debug] or [profile].
+BUILD_CONFIG := debug
+
+#---------------------------------------------------------------------
+# Configure build enviroment.
+#---------------------------------------------------------------------
+
+include Makefile.gcc
+
+#---------------------------------------------------------------------
+# The End.
+#---------------------------------------------------------------------

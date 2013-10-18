@@ -1,0 +1,37 @@
+/*
+** --------------------------------------------------------------------------
+** Instructions not implemented
+** --------------------------------------------------------------------------
+*/
+
+#if 0
+	OpcodeARA, 		  /* X -  a       a        address register add					*/
+	OpcodeARR,        /* X -  v       a        address register load (round)		*/
+
+	OpcodeDDX,	      /* X X  v       v        partial derivative relative to X		*/
+	OpcodeDDY,	      /* X X  v       v        partial derivative relative to Y		*/
+
+	OpcodeDP2A,	  	  /* X X  v,v,v   ssss     2-comp. dot product w/scalar add		*/
+
+	OpcodePOPA,       /* - -  -       a        pop address register					*/
+	OpcodePUSHA,      /* - -  a       -        push address register				*/
+
+	OpcodeSEQ,	      /* X X  v,v     v        set on equal							*/
+	OpcodeSFL,	      /* X X  v,v     v        set on false							*/
+	OpcodeSGE,	      /* X X  v,v     v        set on greater than or equal			*/
+	OpcodeSGT,	      /* X X  v,v     v        set on greater than					*/
+	OpcodeSLE,	      /* X X  v,v     v        set on less than or equal			*/
+	OpcodeSLT,	      /* X X  v,v     v        set on less than						*/
+	OpcodeSNE,	      /* X X  v,v     v        set on not equal						*/
+	OpcodeSSG,        /* X X  v       v        set sign								*/
+	OpcodeSTR,	      /* X X  v,v     v        set on true							*/
+
+	OpcodePK2H,	  	  /* - -  v       ssss     pack two 16-bit floats				*/
+	OpcodePK2US,	  /* - -  v       ssss     pack two unsigned 16-bit scalars		*/
+	OpcodePK4B,	  	  /* - -  v       ssss     pack four signed 8-bit scalars		*/
+	OpcodePK4UB, 	  /* - -  v       ssss     pack four unsigned 8-bit scalars		*/
+	OpcodeUP2H,       /* X X  s       v        unpack two 16-bit floats				*/
+	OpcodeUP2US,      /* X X  s       v        unpack two unsigned 16-bit scalars	*/
+	OpcodeUP4B,       /* X X  s       v        unpack four signed 8-bit scalars		*/
+	OpcodeUP4UB,      /* X X  s       v        unpack four unsigned 8-bit scalars	*/
+#endif

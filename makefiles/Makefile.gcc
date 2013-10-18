@@ -1,0 +1,254 @@
+#---------------------------------------------------------------------
+# Copyright (C) 2006-2007 Babar K. Zafar
+# 
+# This software is provided 'as-is', without any express or implied warranty. 
+# In no event will the authors be held liable for any damages arising from the 
+# use of this software.
+# 
+# Permission is granted to anyone to use this software for any purpose, 
+# including commercial applications, and to alter it and redistribute it 
+# freely, subject to the following restrictions:
+# 
+# 1. The origin of this software must not be misrepresented; you must not 
+# claim that you wrote the original software. If you use this software in a 
+# product, an acknowledgment in the product documentation would be appreciated 
+# but is not required.
+# 
+# 2. Altered source versions must be plainly marked as such, and must not be 
+# misrepresented as being the original software.
+# 
+# 3. This notice may not be removed or altered from any source distribution.
+#---------------------------------------------------------------------
+# This is a modified version of the original Makefile template
+#---------------------------------------------------------------------
+
+#---------------------------------------------------------------------
+# The following variables must be defined before including this file.
+#---------------------------------------------------------------------
+
+# Name of build target.
+# TARGET := 
+#
+# Source files to build target from.
+# BUILD_FILES :=
+
+#---------------------------------------------------------------------
+# Optional configuration flags.
+#---------------------------------------------------------------------
+
+# Build target type: [bin] or [lib].
+ifndef BUILD_TYPE
+  BUILD_TYPE := bin
+endif
+
+# Build configuration [release] or [debug] or [profile].
+ifndef BUILD_CONFIG
+  BUILD_CONFIG := debug
+endif
+
+# Build platform
+ifndef PLATFORM
+  PLATFORM := x86-darwin
+endif
+
+# Root directory for build, all paths are relative to this dir.
+ifndef BUILD_ROOT
+  BUILD_ROOT := .
+endif
+
+# Build subdirectory
+ifndef BUILD_DIR
+  BUILD_DIR := $(PLATFORM)-$(BUILD_CONFIG)
+endif
+
+# Directory for build output (intermediate + target).
+ifndef BUILD_OUTPUT
+  BUILD_OUTPUT := $(BUILD_ROOT)/$(BUILD_DIR)
+endif
+
+# Additional source directories (delimited with spaces).
+ifndef SOURCE_PATH
+  SOURCE_PATH := .
+endif
+
+# Additional directories to search for includes.
+ifndef BUILD_INCLUDE
+  BUILD_INCLUDE := 
+endif
+
+BUILD_INCLUDE += -I$(SOURCE_PATH)
+
+# Additional libraries to link with.
+ifndef BUILD_LIBS
+  BUILD_LIBS :=
+endif
+
+# Additional search paths for libraries.
+ifndef BUILD_LIBPATH
+  BUILD_LIBPATH :=
+endif
+
+# Project libraries that become dependencies for a binary executable
+ifndef PROJECT_LIBS
+  PROJECT_LIBS := 
+endif
+
+# Custom compiler flags.
+ifndef BUILD_CFLAGS
+  BUILD_CFLAGS :=
+endif
+
+# Custom linker flags.
+ifndef BUILD_LFLAGS
+  BUILD_LFLAGS :=
+endif
+
+# Custom warning flags (defaults to pedantic mode).
+ifndef BUILD_WFLAGS
+  BUILD_WFLAGS := -W -Wall 
+endif
+
+# Compile C sources using specific standard: [c89] or [c99] or [gnu99].
+ifndef BUILD_USING_C_STD
+  BUILD_USING_C_STD := c99
+endif
+
+# Compile C++ sources using specific standard: [c++98] or [gnu++98]
+ifndef BUILD_USING_CPP_STD
+  BUILD_USING_CPP_STD := c++98
+endif
+
+#---------------------------------------------------------------------
+# Generic GCC build configurations: [release] or [debug] or [profile].
+#---------------------------------------------------------------------
+
+ifeq ($(BUILD_CONFIG),debug)
+  BUILD_CFLAGS += -pipe -g
+  BUILD_LFLAGS += -pipe -g
+endif
+
+ifeq ($(BUILD_CONFIG),release)
+  BUILD_CFLAGS += -pipe -O2 -D NDEBUG
+  BUILD_LFLAGS += -pipe -s 
+endif
+
+ifeq ($(BUILD_CONFIG),profile)
+  BUILD_CFLAGS += -pipe -pg -O2 -D NDEBUG
+  BUILD_LFLAGS += -pipe -pg
+endif
+
+#---------------------------------------------------------------------
+# Generic GCC build rules.
+#---------------------------------------------------------------------
+
+# Disable implicit suffix rules.
+.SUFFIXES:
+
+# Configure class-based search paths.
+vpath
+vpath %.c    $(SOURCE_PATH)
+vpath %.cpp  $(SOURCE_PATH)
+vpath %.o    $(BUILD_OUTPUT)
+vpath %.d    $(BUILD_OUTPUT)
+
+# Filter out C object files we know how to build.
+BUILD_C_OBJS := $(addsuffix .o, $(basename $(filter %.c, $(BUILD_FILES))))
+
+# Filter out C++ object files we know how to build.
+BUILD_CPP_OBJS := $(addsuffix .o, $(basename $(filter %.cpp, $(BUILD_FILES))))
+
+# Append build directory path to object files.
+OBJS := $(BUILD_C_OBJS:%.o=$(BUILD_OUTPUT)/%.o) $(BUILD_CPP_OBJS:%.o=$(BUILD_OUTPUT)/%.o)
+
+all: $(BUILD_OUTPUT)/$(TARGET)
+
+# Building a regular executable
+ifeq ($(BUILD_TYPE),bin)
+$(BUILD_OUTPUT)/$(TARGET): $(OBJS) $(PROJECT_LIBS)
+	@echo -- Linking executable $(notdir $@)...
+	@mkdir -p $(BUILD_OUTPUT)
+	@$(CXX) $(BUILD_WFLAGS) -L. $(BUILD_LIBPATH) $(BUILD_LFLAGS) -o $@ $(OBJS) $(PROJECT_LIBS) $(BUILD_LIBS)
+endif
+
+# Build static library
+ifeq ($(BUILD_TYPE),lib)
+$(BUILD_OUTPUT)/$(TARGET): $(OBJS)
+	@echo -- Linking static library $(notdir $@)...
+	@mkdir -p $(dir $@)
+	@$(AR) cr $@ $(OBJS)
+endif
+
+# Compile C source
+$(BUILD_OUTPUT)/%.o: %.c
+	@echo -- Compiling $(notdir $<)
+	@mkdir -p $(dir $@)
+	@$(CC) -MMD $(BUILD_CFLAGS) $(BUILD_WFLAGS) -I. $(BUILD_INCLUDE) -c $< -o $@ 
+
+#	@$(CC) -MMD -std=$(BUILD_USING_C_STD) $(BUILD_CFLAGS) $(BUILD_WFLAGS) -I. $(BUILD_INCLUDE) -c $< -o $@ 
+
+# Compile C++ source
+$(BUILD_OUTPUT)/%.o: %.cpp
+	@echo -- Compiling $(notdir $<)
+	@mkdir -p $(dir $@)
+	@$(CXX) -MMD -std=$(BUILD_USING_CPP_STD) $(BUILD_CFLAGS) $(BUILD_WFLAGS) -I. $(BUILD_INCLUDE) -c $< -o $@ 
+
+#---------------------------------------------------------------------
+# Build tags database for Emacs. 
+#---------------------------------------------------------------------
+
+.PHONY: tags
+tags:
+	@echo -- Updating tags database...
+	@gtags
+
+#---------------------------------------------------------------------
+# Maintenance.
+#---------------------------------------------------------------------
+
+.PHONY: clean
+clean: clean-target clean-objs clean-deps clean-gprof clean-tags
+
+.PHONY: clean-target
+clean-target:
+	@-rm -f $(BUILD_OUTPUT)/$(TARGET)
+
+.PHONY: clean-objs
+clean-objs:
+	@-rm -rf echo $(OBJS)
+
+.PHONY: clean-deps
+clean-deps:
+	@-rm -f $(BUILD_C_OBJS:%.o=$(BUILD_OUTPUT)/%.d)
+	@-rm -f $(BUILD_CPP_OBJS:%.o=$(BUILD_OUTPUT)/%.d)
+
+.PHONY: clean-gprof
+clean-gprof:
+	@-rm -f $(BUILD_ROOT)/gmon.out
+	@-rm -f $(BUILD_ROOT)/callf.order
+	@-rm -f $(BUILD_ROOT)/callo.order
+	@-rm -f $(BUILD_ROOT)/gmon.order
+	@-rm -f $(BUILD_ROOT)/time.order
+
+.PHONY: clean-tags
+clean-tags:
+	@-rm -f $(BUILD_ROOT)/GSYMS
+	@-rm -f $(BUILD_ROOT)/GPATH
+	@-rm -f $(BUILD_ROOT)/GTAGS
+	@-rm -f $(BUILD_ROOT)/GRTAGS
+
+#---------------------------------------------------------------------
+# Autogenerated dependencies.
+#---------------------------------------------------------------------
+
+ifneq ($(strip $(BUILD_C_OBJS)),)
+-include $(BUILD_C_OBJS:%.o=$(BUILD_OUTPUT)/%.d)
+endif
+
+ifneq ($(strip $(BUILD_CPP_OBJS)),)
+-include $(BUILD_CPP_OBJS:%.o=$(BUILD_OUTPUT)/%.d)
+endif
+
+#---------------------------------------------------------------------
+# The End.
+#---------------------------------------------------------------------
+

@@ -1,0 +1,1261 @@
+/*
+** ==========================================================================
+**
+** $Id: builtin.common 38 2007-08-22 03:29:12Z hmwill $
+** 
+** Shading Language Front-End: Declarations for built-in functions and symbols 
+** available in all shaders
+**
+** --------------------------------------------------------------------------
+**
+** $Author: hmwill $
+** $Date: 2007-08-21 20:29:12 -0700 (Tue, 21 Aug 2007) $
+**
+** --------------------------------------------------------------------------
+**
+** Vincent 3D Rendering Library, Programmable Pipeline Edition
+** 
+** Copyright (C) 2003-2007 Hans-Martin Will. 
+**
+** @CDDL_HEADER_START@
+**
+** The contents of this file are subject to the terms of the
+** Common Development and Distribution License, Version 1.0 only
+** (the "License").  You may not use this file except in compliance
+** with the License.
+**
+** You can obtain a copy of the license at 
+** http://www.vincent3d.com/software/ogles2/license/license.html
+** See the License for the specific language governing permissions
+** and limitations under the License.
+**
+** When distributing Covered Code, include this CDDL_HEADER in each
+** file and include the License file named LICENSE.TXT in the root folder
+** of your distribution.
+** If applicable, add the following below this CDDL_HEADER, with the
+** fields enclosed by brackets "[]" replaced with your own identifying
+** information: Portions Copyright [yyyy] [name of copyright owner]
+**
+** @CDDL_HEADER_END@
+**
+** ==========================================================================
+*/
+
+/*
+** --------------------------------------------------------------------------
+** 3.4 Pre-defined Macros
+** --------------------------------------------------------------------------
+*/
+
+#define __VERSION__	100
+#define GL_ES		1
+
+/*
+** --------------------------------------------------------------------------
+** 7.4 Built-In Constants
+** --------------------------------------------------------------------------
+*/
+ 
+const mediump int gl_MaxVertexAttribs = 8;           
+const mediump int gl_MaxVertexUniformVectors = 128; 
+const mediump int gl_MaxVaryingVectors = 8;           
+const mediump int gl_MaxVertexTextureImageUnits = 0;  
+const mediump int gl_MaxCombinedTextureImageUnits = 8; 
+const mediump int gl_MaxTextureImageUnits = 8;        
+const mediump int gl_MaxFragmentUniformVectors = 16; 
+const mediump int gl_MaxDrawBuffers = 1;
+
+/*
+** --------------------------------------------------------------------------
+** 7.5 Built-In Uniform State 
+** --------------------------------------------------------------------------
+*/
+
+struct gl_DepthRangeParameters { 
+    highp float near;
+    highp float far;
+    highp float diff;
+}; 
+
+uniform gl_DepthRangeParameters gl_DepthRange;
+
+/*
+** --------------------------------------------------------------------------
+** 8.1 Angle and Trigonometry Functions
+** --------------------------------------------------------------------------
+*/
+
+float radians(float degrees) {
+	const float c = 3.1415926/180.0;
+	
+	__mul	__retval, degrees, c
+}
+
+vec2  radians(vec2 degrees) {
+	const float c = 3.1415926/180.0;
+
+	__mul	__retval.xy, degrees.xy, vec2(c, c)
+}
+
+vec3  radians(vec3 degrees) {
+	const float c = 3.1415926/180.0;
+
+	__mul	__retval.xyz, degrees.xyz, vec3(c, c, c)
+}
+
+vec4  radians(vec4 degrees) {
+	const float c = 3.1415926/180.0;
+
+	__mul	__retval, degrees, vec4(c, c, c, c)
+}
+
+float degrees(float degrees) {
+	const float c = 180.0/3.1415926;
+
+	__mul	__retval, degrees, c
+}
+
+vec2  degrees(vec2 degrees) {
+	const float c = 180.0/3.1415926;
+
+	__mul	__retval.xy, degrees.xy, vec2(c, c)
+}
+
+vec3  degrees(vec3 degrees) {
+	const float c = 180.0/3.1415926;
+
+	__mul	__retval.xyz, degrees.xyz, vec3(c, c, c)
+}
+
+vec4  degrees(vec4 degrees) {
+	const float c = 180.0/3.1415926;
+
+	__mul	__retval, degrees, vec4(c, c, c, c)
+}
+
+float sin(float degrees) {
+	__sin	__retval, degrees;
+}
+
+vec2  sin(vec2 degrees) {
+	__sin	__retval.x, degrees.x;
+	__sin	__retval.y, degrees.y;
+}
+
+vec3  sin(vec3 degrees) {
+	__sin	__retval.x, degrees.x;
+	__sin	__retval.y, degrees.y;
+	__sin	__retval.z, degrees.z
+}
+
+vec4  sin(vec4 degrees) {
+	__sin	__retval.x, degrees.x;
+	__sin	__retval.y, degrees.y;
+	__sin	__retval.z, degrees.z;
+	__sin	__retval.w, degrees.w;
+}
+
+float cos(float degrees) {
+	__cos	__retval, degrees;
+}
+
+vec2  cos(vec2 degrees) {
+	__cos	__retval.x, degrees.x;
+	__cos	__retval.y, degrees.y;
+}
+
+vec3  cos(vec3 degrees) {
+	__cos	__retval.x, degrees.x;
+	__cos	__retval.y, degrees.y;
+	__cos	__retval.z, degrees.z
+}
+
+vec4  cos(vec4 degrees) {
+	__cos	__retval.x, degrees.x;
+	__cos	__retval.y, degrees.y;
+	__cos	__retval.z, degrees.z;
+	__cos	__retval.w, degrees.w;
+}
+
+float tan(float degrees) {
+	float	sine = sin(degrees);
+	float	cosine = cos(degrees);
+	return	sine / cosine;
+}
+
+vec2  tan(vec2 degrees) {
+	vec2	sine = sin(degrees);
+	vec2	cosine = cos(degrees);
+	return	sine / cosine;
+}
+
+vec3  tan(vec3 degrees) {
+	vec3	sine = sin(degrees);
+	vec3	cosine = cos(degrees);
+	return	sine / cosine;
+}
+
+vec4  tan(vec4 degrees) {
+	vec4	sine = sin(degrees);
+	vec4	cosine = cos(degrees);
+	return	sine / cosine;
+}
+
+float abs(float degrees);
+float sqrt(float value);
+float sign(float value);
+
+float asin(float degrees) {
+	const float a0 = 1.5707288;  // PI/2?
+	const float a1 = -0.2121144;
+	const float a2 = 0.0742610;
+	
+	float y = abs(degrees);
+	return (a0 - sqrt(1.0 - y) * (a0 + y * (a1 + a2 * y))) * sign(degrees);
+}
+
+vec2  asin(vec2 degrees) {
+	__retval.x = asin(degrees.x);
+	__retval.y = asin(degrees.y);
+}
+
+vec3  asin(vec3 degrees) {
+	__retval.x = asin(degrees.x);
+	__retval.y = asin(degrees.y);
+	__retval.z = asin(degrees.z);
+}
+
+vec4  asin(vec4 degrees) {
+	__retval.x = asin(degrees.x);
+	__retval.y = asin(degrees.y);
+	__retval.z = asin(degrees.z);
+	__retval.w = asin(degrees.w);
+}
+
+float acos(float degrees) {
+	const float pi_over_2 = 1.5707288;
+	return pi_over_2 - asin(degrees);
+}
+
+vec2  acos(vec2 degrees) {
+	__retval.x = acos(degrees.x);
+	__retval.y = acos(degrees.y);
+}
+
+vec3  acos(vec3 degrees) {
+	__retval.x = acos(degrees.x);
+	__retval.y = acos(degrees.y);
+	__retval.z = acos(degrees.z);
+}
+
+vec4  acos(vec4 degrees) {
+	__retval.x = acos(degrees.x);
+	__retval.y = acos(degrees.y);
+	__retval.z = acos(degrees.z);
+	__retval.w = acos(degrees.w);
+}
+
+float inversesqrt(float value);
+
+float atan(float degrees) {
+	return asin(degrees * inversesqrt(degrees * degrees + 1.0)); 
+}
+
+vec2  atan(vec2 degrees) {
+	__retval.x = atan(degrees.x);
+	__retval.y = atan(degrees.y);
+}
+
+vec3  atan(vec3 degrees) {
+	__retval.x = atan(degrees.x);
+	__retval.y = atan(degrees.y);
+	__retval.z = atan(degrees.z);
+}
+
+vec4  atan(vec4 degrees) {
+	__retval.x = atan(degrees.x);
+	__retval.y = atan(degrees.y);
+	__retval.z = atan(degrees.z);
+	__retval.w = atan(degrees.w);
+}
+
+float atan(float y, float x) {
+	if (x == 0.0) {
+	   return 0.0;
+	}
+	
+	float z = atan(y / x);
+	
+	if (x < 0.0) {
+	    if (y < 0.0) {
+	        return z - 3.1415926;
+		}
+		
+	    return z + 3.1415926;
+	}
+	
+	return z;
+}
+
+vec2  atan(vec2 y,  vec2  x) {
+	__retval.x = atan(y.x, x.x);
+	__retval.y = atan(y.y, x.y);
+}
+
+vec3  atan(vec3 y,  vec3  x) {
+	__retval.x = atan(y.x, x.x);
+	__retval.y = atan(y.y, x.y);
+	__retval.z = atan(y.z, x.z);
+}
+
+vec4  atan(vec4 y,  vec4  x) {
+	__retval.x = atan(y.x, x.x);
+	__retval.y = atan(y.y, x.y);
+	__retval.z = atan(y.z, x.z);
+	__retval.w = atan(y.w, x.w);
+}
+
+/*
+** --------------------------------------------------------------------------
+** 8.2 Exponential Functions
+** --------------------------------------------------------------------------
+*/
+
+float pow(float x, float y) {
+	__pow 	__retval, x, y
+}
+
+vec2  pow(vec2  x, vec2  y) {
+	__pow 	__retval.x, x.x, y.x
+	__pow 	__retval.y, x.y, y.y
+}
+
+vec3  pow(vec3  x, vec3  y) {
+	__pow 	__retval.x, x.x, y.x
+	__pow 	__retval.y, x.y, y.y
+	__pow 	__retval.z, x.z, y.z
+}
+
+vec4  pow(vec4  x, vec4  y) {
+	__pow 	__retval.x, x.x, y.x
+	__pow 	__retval.y, x.y, y.y
+	__pow 	__retval.z, x.z, y.z
+	__pow 	__retval.w, x.w, y.w
+}
+
+float exp2(float x) {
+	__ex2	__retval, x
+}
+
+vec2  exp2(vec2 x) {
+	__ex2	__retval.x, x.x
+	__ex2	__retval.y, x.y
+}
+
+vec3  exp2(vec3 x) {
+	__ex2	__retval.x, x.x
+	__ex2	__retval.y, x.y
+	__ex2	__retval.z, x.z
+}
+
+vec4  exp2(vec4 x) {
+	__ex2	__retval.x, x.x
+	__ex2	__retval.y, x.y
+	__ex2	__retval.z, x.z
+	__ex2	__retval.w, x.w
+}
+
+float log2(float x) {
+	__lg2	__retval, x
+}
+
+vec2  log2(vec2 x) {
+	__lg2	__retval.x, x.x
+	__lg2	__retval.y, x.y
+}
+
+vec3  log2(vec3 x) {
+	__lg2	__retval.x, x.x
+	__lg2	__retval.y, x.y
+	__lg2	__retval.z, x.z
+}
+
+vec4  log2(vec4 x) {
+	__lg2	__retval.x, x.x
+	__lg2	__retval.y, x.y
+	__lg2	__retval.z, x.z
+	__lg2	__retval.w, x.w
+}
+
+float exp(float x) {
+	const float e = 2.71828;
+	
+	__pow 	__retval, e, x;
+}
+
+vec2  exp(vec2 x) {
+	const float e = 2.71828;
+
+	__pow 	__retval.x, e, x.x;
+	__pow 	__retval.y, e, x.y;
+}
+
+vec3  exp(vec3 x) {
+	const float e = 2.71828;
+
+	__pow 	__retval.x, e, x.x;
+	__pow 	__retval.y, e, x.y;
+	__pow 	__retval.z, e, x.z;
+}
+
+vec4  exp(vec4 x) {
+	const float e = 2.71828;
+
+	__pow 	__retval.x, e, x.x;
+	__pow 	__retval.y, e, x.y;
+	__pow 	__retval.z, e, x.z;
+	__pow 	__retval.w, e, x.w;
+}
+
+float log(float x) {
+	const float c = 0.693147181;
+
+	return log2(x) * c;
+}
+
+vec2  log(vec2 x) {
+	const float c = 0.693147181;
+
+	return log2(x) * c;
+}
+
+vec3  log(vec3 x) {
+	const float c = 0.693147181;
+
+	return log2(x) * c;
+}
+
+vec4  log(vec4 x) {
+	const float c = 0.693147181;
+
+	return log2(x) * c;
+}
+
+float sqrt(float x) {
+	float	temp;
+	__rsq	temp, x
+	__rcp	__retval, temp
+}
+
+vec2  sqrt(vec2 x) {
+	__retval.x = sqrt(x.x);
+	__retval.y = sqrt(x.y);
+}
+
+vec3  sqrt(vec3 x) {
+	__retval.x = sqrt(x.x);
+	__retval.y = sqrt(x.y);
+	__retval.z = sqrt(x.z);
+}
+
+vec4  sqrt(vec4 x) {
+	__retval.x = sqrt(x.x);
+	__retval.y = sqrt(x.y);
+	__retval.z = sqrt(x.z);
+	__retval.w = sqrt(x.w);
+}
+
+float inversesqrt(float x) {
+	__rsq	__retval, x
+}
+
+vec2  inversesqrt(vec2 x) {
+	__rsq	__retval.x, x.x
+	__rsq	__retval.y, x.y
+}
+
+vec3  inversesqrt(vec3 x) {
+	__rsq	__retval.x, x.x
+	__rsq	__retval.y, x.y
+	__rsq	__retval.z, x.z
+}
+
+vec4  inversesqrt(vec4 x) {
+	__rsq	__retval.x, x.x
+	__rsq	__retval.y, x.y
+	__rsq	__retval.z, x.z
+	__rsq	__retval.w, x.w
+}
+
+/*
+** --------------------------------------------------------------------------
+** 8.3 Common Functions 
+** --------------------------------------------------------------------------
+*/
+
+float abs(float x) {
+	__abs	__retval, x
+}
+
+vec2  abs(vec2  x) {
+	__abs	__retval, x
+}
+
+vec3  abs(vec3  x) {
+	__abs	__retval, x
+}
+
+vec4  abs(vec4  x) {
+	__abs	__retval, x
+}
+
+float sign(float x) {
+	__ssg	__retval, x
+}
+
+vec2  sign(vec2  x) {
+	__ssg	__retval, x
+}
+
+vec3  sign(vec3  x) {
+	__ssg	__retval, x
+}
+
+vec4  sign(vec4  x) {
+	__ssg	__retval, x
+}
+
+float floor(float x) {
+	__flr	__retval, x
+}
+
+vec2  floor(vec2  x) {
+	__flr	__retval, x
+}
+
+vec3  floor(vec3  x) {
+	__flr	__retval, x
+}
+
+vec4  floor(vec4  x) {
+	__flr	__retval, x
+}
+
+float ceil(float x) {
+	return -floor(-x);
+}
+
+vec2  ceil(vec2  x) {
+	return -floor(-x);
+}
+
+vec3  ceil(vec3  x) {
+	return -floor(-x);
+}
+
+vec4  ceil(vec4  x)  {
+	return -floor(-x);
+}
+
+float fract(float x) {
+	__frc	__retval, x
+}
+
+vec2  fract(vec2  x) {
+	__frc	__retval, x
+}
+
+vec3  fract(vec3  x) {
+	__frc	__retval, x
+}
+
+vec4  fract(vec4  x) {
+	__frc	__retval, x
+}
+
+float mod(float x, float y) {
+	float 	inv_y;
+	
+	__rcp 	inv_y, y;
+	
+	return x - y * floor(x * inv_y);
+}
+
+vec2  mod(vec2  x, float y) {
+	float 	inv_y;
+	
+	__rcp 	inv_y, y;
+	
+	return x - y * floor(x * inv_y);
+}
+
+vec3  mod(vec3  x, float y) {
+	float 	inv_y;
+	
+	__rcp 	inv_y, y;
+	
+	return x - y * floor(x * inv_y);
+}
+
+vec4  mod(vec4  x, float y) {
+	float 	inv_y;
+	
+	__rcp 	inv_y, y;
+	
+	return x - y * floor(x * inv_y);
+}
+
+vec2  mod(vec2  x, vec2 y) {
+	return vec2(mod(x.x, y.x), mod(x.y, y.y));
+}
+
+vec3  mod(vec3  x, vec3 y) {
+	return vec3(mod(x.x, y.x), mod(x.y, y.y), mod(x.z, y.z));
+}
+
+vec4  mod(vec4  x, vec4 y) {
+	return vec4(mod(x.x, y.x), mod(x.y, y.y), mod(x.z, y.z), mod(x.w, y.w));
+}
+
+float min(float x, float y) {
+	__min	__retval, x, y
+}
+
+vec2  min(vec2  x, float y) {
+	__min	__retval, x, vec2(y)
+}
+
+vec3  min(vec3  x, float y) {
+	__min	__retval, x, vec3(y)
+}
+
+vec4  min(vec4  x, float y) {
+	__min	__retval, x, vec4(y)
+}
+
+vec2  min(vec2  x, vec2 y) {
+	__min	__retval, x, y
+}
+
+vec3  min(vec3  x, vec3 y) {
+	__min	__retval, x, y
+}
+
+vec4  min(vec4  x, vec4 y) {
+	__min	__retval, x, y
+}
+
+float max(float x, float y) {
+	__max	__retval, x, y
+}
+
+vec2  max(vec2  x, float y) {
+	__max	__retval, x, vec2(y)
+}
+
+vec3  max(vec3  x, float y) {
+	__max	__retval, x, vec3(y)
+}
+
+vec4  max(vec4  x, float y) {
+	__max	__retval, x, vec4(y)
+}
+
+vec2  max(vec2  x, vec2 y) {
+	__max	__retval, x, y
+}
+
+vec3  max(vec3  x, vec3 y) {
+	__max	__retval, x, y
+}
+
+vec4  max(vec4  x, vec4 y) {
+	__max	__retval, x, y
+}
+
+float clamp(float x, float minVal, float maxVal) {
+	return min(max(x, minVal), maxVal);
+}
+
+vec2  clamp(vec2  x, float minVal, float maxVal) {
+	return min(max(x, minVal), maxVal);
+}
+
+vec3  clamp(vec3  x, float minVal, float maxVal) {
+	return min(max(x, minVal), maxVal);
+}
+
+vec4  clamp(vec4  x, float minVal, float maxVal) {
+	return min(max(x, minVal), maxVal);
+}
+
+vec2  clamp(vec2  x, vec2  minVal, vec2  maxVal) {
+	return min(max(x, minVal), maxVal);
+}
+
+vec3  clamp(vec3  x, vec3  minVal, vec3  maxVal) {
+	return min(max(x, minVal), maxVal);
+}
+
+vec4  clamp(vec4  x, vec4  minVal, vec4  maxVal) {
+	return min(max(x, minVal), maxVal);
+}
+
+float mix(float x, float y, float a) {
+	__lrp	__retval, x, y, a
+}
+
+vec2  mix(vec2  x, vec2  y, float a) {
+	__lrp	__retval, x, y, vec2(a)
+}
+
+vec3  mix(vec3  x, vec3  y, float a) {
+	__lrp	__retval, x, y, vec3(a)
+}
+
+vec4  mix(vec4  x, vec4  y, float a) {
+	__lrp	__retval, x, y, vec4(a)
+}
+
+vec2  mix(vec2  x, vec2  y, vec2  a) {
+	__lrp	__retval, x, y, a
+}
+
+vec3  mix(vec3  x, vec3  y, vec3  a) {
+	__lrp	__retval, x, y, a
+}
+
+vec4  mix(vec4  x, vec4  y, vec4  a) {
+	__lrp	__retval, x, y, a
+}
+
+float step(float edge, float x) {
+	__sgt	__retval, x, edge
+}
+
+vec2  step(float edge, vec2  x) {
+	__sgt	__retval, x, vec2(edge)
+}
+
+vec3  step(float edge, vec3  x) {
+	__sgt	__retval, x, vec3(edge)
+}
+
+vec4  step(float edge, vec4  x) {
+	__sgt	__retval, x, vec4(edge)
+}
+
+vec2  step(vec2  edge, vec2  x) {
+	__sgt	__retval, x, edge
+}
+
+vec3  step(vec3  edge, vec3  x) {
+	__sgt	__retval, x, edge
+}
+
+vec4  step(vec4  edge, vec4  x) {
+	__sgt	__retval, x, edge
+}
+
+float smoothstep(float edge0, float edge1, float x)
+{
+    float 	t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+
+    return t * t * (3.0 - 2.0 * t);
+}
+
+vec2 smoothstep(vec2 edge0, vec2 edge1, vec2 v)
+{
+   vec2 	t = clamp((v - edge0) / (edge1 - edge0), 0.0, 1.0);
+
+   return t * t * (3.0 - 2.0 * t);
+}
+
+vec3 smoothstep(vec3 edge0, vec3 edge1, vec3 v)
+{
+   vec3 	t = clamp((v - edge0) / (edge1 - edge0), 0.0, 1.0);
+
+   return t * t * (3.0 - 2.0 * t);
+}
+
+vec4 smoothstep(vec4 edge0, vec4 edge1, vec4 v)
+{
+   vec4 	t = clamp((v - edge0) / (edge1 - edge0), 0.0, 1.0);
+
+   return t * t * (3.0 - 2.0 * t);
+}
+
+vec2 smoothstep(float edge0, float edge1, vec2 v)
+{
+   vec2 	t = clamp((v - edge0) / (edge1 - edge0), 0.0, 1.0);
+
+   return t * t * (3.0 - 2.0 * t);
+}
+
+vec3 smoothstep(float edge0, float edge1, vec3 v)
+{
+   vec3 	t = clamp((v - edge0) / (edge1 - edge0), 0.0, 1.0);
+
+   return t * t * (3.0 - 2.0 * t);
+}
+
+vec4 smoothstep(float edge0, float edge1, vec4 v)
+{
+   vec4 	t = clamp((v - edge0) / (edge1 - edge0), 0.0, 1.0);
+
+   return t * t * (3.0 - 2.0 * t);
+}
+
+/*
+** --------------------------------------------------------------------------
+** 8.4 Geometric Functions
+** --------------------------------------------------------------------------
+*/
+
+float dot(float p0, float p1) {
+	return p0 * p1;
+}
+
+float dot(vec2  p0, vec2  p1) {
+	__dp2	__retval, p0, p1
+}
+
+float dot(vec3  p0, vec3  p1) {
+	__dp3	__retval, p0, p1
+}
+
+float dot(vec4  p0, vec4  p1) {
+	__dp4	__retval, p0, p1
+}
+
+float length(float x) {
+	return abs(x);
+}
+
+float length(vec2  x) {
+	return sqrt(dot(x, x));
+}
+
+float length(vec3  x) {
+	return sqrt(dot(x, x));
+}
+
+float length(vec4  x) {
+	return sqrt(dot(x, x));
+}
+
+float distance(float p0, float p1) {
+	return abs(p1 - p0);
+}
+
+float distance(vec2  p0, vec2  p1) {
+	return length(p1 - p0);
+}
+
+float distance(vec3  p0, vec3  p1) {
+	return length(p1 - p0);
+}
+
+float distance(vec4  p0, vec4  p1) {
+	return length(p1 - p0);
+}
+
+vec3 cross(vec3 x, vec3 y) {
+	__xpd	__retval, x, y
+}
+
+float normalize(float x) {
+	return 1.0;
+}
+
+vec2  normalize(vec2  x) {
+	return x * inversesqrt(dot(x, x));
+}
+
+vec3  normalize(vec3  x) {
+	return x * inversesqrt(dot(x, x));
+}
+
+vec4  normalize(vec4  x) {
+	return x * inversesqrt(dot(x, x));
+}
+
+float faceforward(float N, float I, float Nref) {
+	float 	d = dot(Nref, I), s;
+	
+	__sgt 	s, 0.0, d
+	
+	return mix(-N, N, s);
+}
+
+vec2  faceforward(vec2  N, vec2  I, vec2  Nref) {
+	float 	d = dot(Nref, I), s;
+
+	__sgt 	s, 0.0, d
+
+	return mix(-N, N, s);
+}
+
+vec3  faceforward(vec3  N, vec3  I, vec3  Nref) {
+	float 	d = dot(Nref, I), s;
+
+	__sgt 	s, 0.0, d
+
+	return mix(-N, N, s);
+}
+
+vec4  faceforward(vec4  N, vec4  I, vec4  Nref) {
+	float 	d = dot(Nref, I), s;
+
+	__sgt 	s, 0.0, d
+
+	return mix(-N, N, s);
+}
+
+float reflect(float I, float N) {
+	return I - 2.0 * dot(N, I) * N;
+}
+
+vec2  reflect(vec2  I, vec2  N) {
+	return I - 2.0 * dot(N, I) * N;
+}
+
+vec3  reflect(vec3  I, vec3  N) {
+	return I - 2.0 * dot(N, I) * N;
+}
+
+vec4  reflect(vec4  I, vec4  N) {
+	return I - 2.0 * dot(N, I) * N;
+}
+
+float refract(float I, float N, float eta) {
+	float 	k = 1.0 - eta * eta * (1.0 - dot(N, I) * dot(N, I));
+	
+	if (k < 0.0) {
+	    return 0.0;
+	} else {
+		return eta * I - (eta * dot(N, I) + sqrt(k)) * N;
+	}
+}
+
+vec2  refract(vec2  I, vec2  N, float eta) {
+	float 	k = 1.0 - eta * eta * (1.0 - dot(N, I) * dot(N, I));
+	
+	if (k < 0.0) {
+	    return vec2(0.0);
+	} else {
+		return eta * I - (eta * dot(N, I) + sqrt(k)) * N;
+	}
+}
+
+vec3  refract(vec3  I, vec3  N, float eta) {
+	float 	k = 1.0 - eta * eta * (1.0 - dot(N, I) * dot(N, I));
+	
+	if (k < 0.0) {
+	    return vec3(0.0);
+	} else {
+		return eta * I - (eta * dot(N, I) + sqrt(k)) * N;
+	}
+}
+
+vec4  refract(vec4  I, vec4  N, float eta) {
+	float 	k = 1.0 - eta * eta * (1.0 - dot(N, I) * dot(N, I));
+	
+	if (k < 0.0) {
+	    return vec4(0.0);
+	} else {
+		return eta * I - (eta * dot(N, I) + sqrt(k)) * N;
+	}
+}
+
+/*
+** --------------------------------------------------------------------------
+** 8.5 Matrix Functions 
+** --------------------------------------------------------------------------
+*/
+
+/*
+mat2 matrixCompMult (mat2 m, mat2 n) {
+    return mat2(m[0] * n[0], m[1] * n[1]);
+}
+
+mat3 matrixCompMult (mat3 m, mat3 n) {
+    return mat3(m[0] * n[0], m[1] * n[1], m[2] * n[2]);
+}
+
+mat4 matrixCompMult (mat4 m, mat4 n) {
+    return mat4(m[0] * n[0], m[1] * n[1], m[2] * n[2], m[3] * n[3]);
+}
+*/
+
+/*
+** --------------------------------------------------------------------------
+** 8.6 Vector Relational Functions
+** --------------------------------------------------------------------------
+*/
+
+bvec2 lessThan(vec2  x, vec2  y) {
+	__slt	__retval, x, y
+}
+
+bvec3 lessThan(vec3  x, vec3  y) {
+	__slt	__retval, x, y
+}
+
+bvec4 lessThan(vec4  x, vec4  y) {
+	__slt	__retval, x, y
+}
+
+bvec2 lessThan(ivec2 x, ivec2 y) {
+	__slt	__retval, x, y
+}
+
+bvec3 lessThan(ivec3 x, ivec3 y) {
+	__slt	__retval, x, y
+}
+
+bvec4 lessThan(ivec4 x, ivec4 y) {
+	__slt	__retval, x, y
+}
+
+bvec2 lessThanEqual(vec2  x, vec2  y) {
+	__sle	__retval, x, y
+}
+
+bvec3 lessThanEqual(vec3  x, vec3  y) {
+	__sle	__retval, x, y
+}
+
+bvec4 lessThanEqual(vec4  x, vec4  y) {
+	__sle	__retval, x, y
+}
+
+bvec2 lessThanEqual(ivec2 x, ivec2 y) {
+	__sle	__retval, x, y
+}
+
+bvec3 lessThanEqual(ivec3 x, ivec3 y) {
+	__sle	__retval, x, y
+}
+
+bvec4 lessThanEqual(ivec4 x, ivec4 y) {
+	__sle	__retval, x, y
+}
+
+bvec2 greaterThan(vec2  x, vec2  y) {
+	__sgt	__retval, x, y
+}
+
+bvec3 greaterThan(vec3  x, vec3  y) {
+	__sgt	__retval, x, y
+}
+
+bvec4 greaterThan(vec4  x, vec4  y) {
+	__sgt	__retval, x, y
+}
+
+bvec2 greaterThan(ivec2 x, ivec2 y) {
+	__sgt	__retval, x, y
+}
+
+bvec3 greaterThan(ivec3 x, ivec3 y) {
+	__sgt	__retval, x, y
+}
+
+bvec4 greaterThan(ivec4 x, ivec4 y) {
+	__sgt	__retval, x, y
+}
+
+bvec2 greaterThanEqual(vec2  x, vec2  y) {
+	__sge	__retval, x, y
+}
+
+bvec3 greaterThanEqual(vec3  x, vec3  y) {
+	__sge	__retval, x, y
+}
+
+bvec4 greaterThanEqual(vec4  x, vec4  y) {
+	__sge	__retval, x, y
+}
+
+bvec2 greaterThanEqual(ivec2 x, ivec2 y) {
+	__sge	__retval, x, y
+}
+
+bvec3 greaterThanEqual(ivec3 x, ivec3 y) {
+	__sge	__retval, x, y
+}
+
+bvec4 greaterThanEqual(ivec4 x, ivec4 y) {
+	__sge	__retval, x, y
+}
+
+bvec2 equal(vec2  x, vec2  y) {
+	__seq	__retval, x, y
+}
+
+bvec2 equal(ivec2 x, ivec2 y) {
+	__seq	__retval, x, y
+}
+
+bvec2 equal(bvec2 x, bvec2 y) {
+	__seq	__retval, x, y
+}
+
+bvec3 equal(vec3  x, vec3  y) {
+	__seq	__retval, x, y
+}
+
+bvec3 equal(ivec3 x, ivec3 y) {
+	__seq	__retval, x, y
+}
+
+bvec3 equal(bvec3 x, bvec3 y) {
+	__seq	__retval, x, y
+}
+
+bvec4 equal(vec4  x, vec4  y) {
+	__seq	__retval, x, y
+}
+
+bvec4 equal(ivec4 x, ivec4 y) {
+	__seq	__retval, x, y
+}
+
+bvec4 equal(bvec4 x, bvec4 y) {
+	__seq	__retval, x, y
+}
+
+bvec2 notEqual(vec2  x, vec2  y) {
+	__sne	__retval, x, y
+}
+
+bvec2 notEqual(ivec2 x, ivec2 y) {
+	__sne	__retval, x, y
+}
+
+bvec2 notEqual(bvec2 x, bvec2 y) {
+	__sne	__retval, x, y
+}
+
+bvec3 notEqual(vec3  x, vec3  y) {
+	__sne	__retval, x, y
+}
+
+bvec3 notEqual(ivec3 x, ivec3 y) {
+	__sne	__retval, x, y
+}
+
+bvec3 notEqual(bvec3 x, bvec3 y) {
+	__sne	__retval, x, y
+}
+
+bvec4 notEqual(vec4  x, vec4  y) {
+	__sne	__retval, x, y
+}
+
+bvec4 notEqual(ivec4 x, ivec4 y) {
+	__sne	__retval, x, y
+}
+
+bvec4 notEqual(bvec4 x, bvec4 y) {
+	__sne	__retval, x, y
+}
+
+bool any(bvec2 x) {
+	float 	sum;
+	
+	__add 	sum, x.x, x.y;
+	__sne 	__retval, sum, 0.0;
+}
+
+bool any(bvec3 x) {
+	float 	sum;
+
+	__add 	sum, x.x, x.y;
+	__add	sum, sum, x.z
+	__sne 	__retval, sum, 0.0;
+}
+
+bool any(bvec4 x) {
+	float 	sum;
+
+	__add 	sum, x.x, x.y;
+	__add	sum, sum, x.z
+	__add	sum, sum, x.w
+	__sne 	__retval, sum, 0.0;
+}
+
+bool all(bvec2 x) {
+	float 	prod;
+	
+	__mul	prod, x.x, x.y;
+	__sne 	__retval, prod, 0.0;
+}
+
+bool all(bvec3 x) {
+	float 	prod;
+
+	__mul	prod, x.x, x.y;
+	__mul	prod, prod, x.z
+	__sne 	__retval, prod, 0.0;
+}
+
+bool all(bvec4 x) {
+	float 	prod;
+
+	__mul	prod, x.x, x.y;
+	__mul	prod, prod, x.z
+	__mul	prod, prod, x.w
+	__sne 	__retval, prod, 0.0;
+}
+
+bvec2 not(bvec2 x) {
+	const bvec2	zero = bvec2(false, false);
+	
+	__seq	__retval, x, zero
+}
+
+bvec3 not(bvec3 x){
+	const bvec3	zero = bvec3(false, false, false);
+
+	__seq	__retval, x, zero
+}
+
+bvec4 not(bvec4 x) {
+	const bvec4	zero = bvec4(false, false, false, false);
+
+	__seq	__retval, x, zero
+}
+
+/*
+** --------------------------------------------------------------------------
+** 8.7 Texture Lookup Functions 
+** --------------------------------------------------------------------------
+*/
+
+vec4 texture2D(sampler2D sampler, vec2 coord) {
+	__tex	__retval, coord, sampler
+}
+
+vec4 texture2DProj(sampler2D sampler, vec3 coord) {
+	__txp	__retval, coord.xyxz, sampler
+}
+
+vec4 texture2DProj(sampler2D sampler, vec4 coord) {
+	__txp	__retval, coord, sampler
+}
+
+vec4 texture3D(sampler3D sampler, vec3 coord)
+{
+	__tex 	__retval, coord, sampler
+}
+
+vec4 texture3DProj(sampler3D sampler, vec4 coord)
+{
+ 	__txp	__retval, coord, sampler
+}
+
+vec4 textureCube (samplerCube sampler, vec3 coord) {
+	__tex	__retval, coord, sampler
+}
